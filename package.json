@@ -1,0 +1,36 @@
+{
+  "name": "aina-atlas-mcp",
+  "version": "0.1.0",
+  "description": "MCP server exposing Āina Atlas — Hawaii parcel lookup (TMK, zoning, lava/tsunami/FEMA hazards, ahupuaʻa context, ADU, AVM) plus an AI property brief — as Claude tools.",
+  "type": "module",
+  "bin": {
+    "aina-atlas-mcp": "build/index.js"
+  },
+  "files": [
+    "build"
+  ],
+  "scripts": {
+    "build": "tsc && chmod +x build/index.js",
+    "start": "node build/index.js",
+    "dev": "tsc --watch"
+  },
+  "keywords": [
+    "mcp",
+    "model-context-protocol",
+    "hawaii",
+    "gis",
+    "parcel",
+    "aina-atlas"
+  ],
+  "author": "BlueWave Projects AI",
+  "license": "MIT",
+  "dependencies": {
+    "@anthropic-ai/sdk": "^0.105.0",
+    "@modelcontextprotocol/sdk": "^1.20.0",
+    "zod": "^3.25.0"
+  },
+  "devDependencies": {
+    "@types/node": "^22.0.0",
+    "typescript": "^5.6.0"
+  }
+}
