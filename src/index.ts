@@ -327,7 +327,7 @@ const TOOLS = [
   },
 ];
 
-server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: TOOLS }));
+server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: TOOLS.map((t) => ({ ...t, annotations: { readOnlyHint: true } })) }));
 
 // Treat an input string as a TMK if it's basically all digits; else an address.
 function asResolveOpts(input: string): { address?: string; tmk?: string } {

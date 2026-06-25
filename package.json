@@ -1,6 +1,7 @@
 {
   "name": "aina-atlas-mcp",
   "version": "0.1.0",
+  "mcpName": "io.github.portofcams/aina-atlas",
   "description": "MCP server exposing Āina Atlas — Hawaii parcel lookup (TMK, zoning, lava/tsunami/FEMA hazards, ahupuaʻa context, ADU, AVM) plus an AI property brief — as Claude tools.",
   "type": "module",
   "bin": {

@@ -88,3 +88,11 @@ Use an absolute path to `build/index.js`. Restart Claude Desktop; the `aina-atla
 ## License
 
 MIT
+
+---
+
+## Work with me
+
+I'm John Thomas — I run **BlueWave Projects**, an AI build studio. I ship production MCP servers, Claude agents, and LLM-in-the-loop pipelines — usually in days, not months — over real, often regulated data (FAA Part 135, maritime AIS, Hawaii property records). USCG Master Captain; deep in aviation, maritime, and construction operations.
+
+Want Claude wired into your own data or workflow? **john@binnacleai.com** · https://bluewaveprojects.com
