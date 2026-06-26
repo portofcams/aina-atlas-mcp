@@ -1,0 +1,36 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.portofcams/aina-atlas",
+  "description": "MCP server exposing Āina Atlas — Hawaii parcel lookup (TMK, zoning, lava/tsunami/FEMA hazards, ahupuaʻa context, ADU, AVM) plus an AI property brief — as Claude tools.",
+  "repository": {
+    "url": "https://github.com/portofcams/aina-atlas-mcp",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "packages": [
+    {
+      "registryType": "npm",
+      "identifier": "aina-atlas-mcp",
+      "version": "0.1.0",
+      "transport": {
+        "type": "stdio"
+      },
+      "environmentVariables": [
+        {
+          "description": "Anthropic API key — only needed for the generate_property_brief tool. The parcel-lookup tools work without it.",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": true,
+          "name": "ANTHROPIC_API_KEY"
+        },
+        {
+          "description": "Base URL for the Aina Atlas data API. Defaults to https://addressapi.portofcams.com.",
+          "isRequired": false,
+          "format": "string",
+          "isSecret": false,
+          "name": "AINA_BASE_URL"
+        }
+      ]
+    }
+  ]
+}
