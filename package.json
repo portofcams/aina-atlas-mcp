@@ -2,17 +2,19 @@
   "name": "aina-atlas-mcp",
   "version": "0.1.0",
   "mcpName": "io.github.portofcams/aina-atlas",
-  "description": "MCP server exposing Āina Atlas — Hawaii parcel lookup (TMK, zoning, lava/tsunami/FEMA hazards, ahupuaʻa context, ADU, AVM) plus an AI property brief — as Claude tools.",
+  "description": "MCP server exposing Āina Atlas — Hawaii parcel lookup (TMK, zoning, lava/tsunami/FEMA hazards, ahupuaʻa context, ADU, AVM) plus an AI property brief — as Claude tools. Runs over stdio (Claude Desktop) or remote Streamable HTTP.",
   "type": "module",
   "bin": {
     "aina-atlas-mcp": "build/index.js"
   },
   "files": [
-    "build"
+    "build",
+    "PRIVACY.md"
   ],
   "scripts": {
     "build": "tsc && chmod +x build/index.js",
     "start": "node build/index.js",
+    "start:http": "node build/http.js",
     "dev": "tsc --watch"
   },
   "keywords": [
@@ -28,9 +30,13 @@
   "dependencies": {
     "@anthropic-ai/sdk": "^0.105.0",
     "@modelcontextprotocol/sdk": "^1.20.0",
+    "cors": "^2.8.5",
+    "express": "^4.21.2",
     "zod": "^3.25.0"
   },
   "devDependencies": {
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
     "@types/node": "^22.0.0",
     "typescript": "^5.6.0"
   }

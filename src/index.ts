@@ -29,6 +29,8 @@ import {
   ListToolsRequestSchema,
 } from "@modelcontextprotocol/sdk/types.js";
 import Anthropic from "@anthropic-ai/sdk";
+import { fileURLToPath } from "node:url";
+import { realpathSync } from "node:fs";
 
 // ---------------------------------------------------------------------------
 // Config (env-driven; see .env.example)
@@ -261,11 +263,6 @@ function extractJson(s: string): string {
 // ---------------------------------------------------------------------------
 // MCP server + tool definitions
 // ---------------------------------------------------------------------------
-const server = new Server(
-  { name: "aina-atlas-mcp", version: "0.1.0" },
-  { capabilities: { tools: {} } }
-);
-
 const TOOLS = [
   {
     name: "resolve_address",
@@ -327,8 +324,6 @@ const TOOLS = [
   },
 ];
 
-server.setRequestHandler(ListToolsRequestSchema, async () => ({ tools: TOOLS.map((t) => ({ ...t, annotations: { readOnlyHint: true } })) }));
-
 // Treat an input string as a TMK if it's basically all digits; else an address.
 function asResolveOpts(input: string): { address?: string; tmk?: string } {
   const digits = input.replace(/[^0-9]/g, "");
@@ -336,7 +331,7 @@ function asResolveOpts(input: string): { address?: string; tmk?: string } {
   return looksLikeTmk ? { tmk: input } : { address: input };
 }
 
-server.setRequestHandler(CallToolRequestSchema, async (request) => {
+async function handleCallTool(request: { params: { name: string; arguments?: Record<string, any> } }) {
   const { name, arguments: args = {} } = request.params;
   try {
     switch (name) {
@@ -387,7 +382,7 @@ server.setRequestHandler(CallToolRequestSchema, async (request) => {
       isError: true,
     };
   }
-});
+}
 
 // A compact, human-readable comparison of the fields that matter most.
 function diffParcels(a: any, b: any) {
@@ -412,9 +407,38 @@ function jsonResult(obj: unknown) {
 }
 
 // ---------------------------------------------------------------------------
-// Boot
+// Server factory — shared by the stdio entry below and the HTTP entry (http.ts)
+// ---------------------------------------------------------------------------
+export function createServer(): Server {
+  const server = new Server(
+    { name: "aina-atlas-mcp", version: "0.1.0" },
+    { capabilities: { tools: {} } }
+  );
+  server.setRequestHandler(ListToolsRequestSchema, async () => ({
+    // The brief tool costs Anthropic credits; hide it unless a key is configured,
+    // so a public remote deployment advertises only the keyless, free tools.
+    tools: TOOLS.filter(
+      (t) => t.name !== "generate_property_brief" || Boolean(ANTHROPIC_API_KEY)
+    ).map((t) => ({ ...t, annotations: { readOnlyHint: true } })),
+  }));
+  server.setRequestHandler(CallToolRequestSchema, (request) => handleCallTool(request));
+  return server;
+}
+
+export const AINA_INFO = {
+  name: "aina-atlas-mcp",
+  version: "0.1.0",
+  dataBase: AINA_BASE_URL,
+  briefModel: BRIEF_MODEL,
+  briefEnabled: Boolean(ANTHROPIC_API_KEY),
+};
+
+// ---------------------------------------------------------------------------
+// Boot (stdio) — only when this file is run directly, so http.ts can import
+// createServer() without starting a stdio server.
 // ---------------------------------------------------------------------------
 async function main() {
+  const server = createServer();
   const transport = new StdioServerTransport();
   await server.connect(transport);
   // stderr only — stdout is the MCP stdio channel and must stay clean.
@@ -424,7 +448,18 @@ async function main() {
   );
 }
 
-main().catch((err) => {
-  console.error("Fatal:", err);
-  process.exit(1);
-});
+const isDirectRun = (() => {
+  if (!process.argv[1]) return false;
+  try {
+    return fileURLToPath(import.meta.url) === realpathSync(process.argv[1]);
+  } catch {
+    return false;
+  }
+})();
+
+if (isDirectRun) {
+  main().catch((err) => {
+    console.error("Fatal:", err);
+    process.exit(1);
+  });
+}

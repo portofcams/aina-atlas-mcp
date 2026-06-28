@@ -1,0 +1,16 @@
+{
+  "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
+  "name": "io.github.portofcams/aina-atlas",
+  "description": "MCP server exposing Āina Atlas — Hawaii parcel lookup (TMK, zoning, lava/tsunami/FEMA hazards, ahupuaʻa context, ADU, AVM) — as Claude tools, over a remote Streamable HTTP endpoint. Read-only, keyless.",
+  "repository": {
+    "url": "https://github.com/portofcams/aina-atlas-mcp",
+    "source": "github"
+  },
+  "version": "0.1.0",
+  "remotes": [
+    {
+      "type": "streamable-http",
+      "url": "https://aina-atlas-mcp.portofcams.com/mcp"
+    }
+  ]
+}
